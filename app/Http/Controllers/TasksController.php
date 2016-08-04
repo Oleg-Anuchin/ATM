@@ -2,33 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Illuminate\Support\Facades\Redirect;
 
-use Hash;
-use Illuminate\Support\Facades\Input;
+use App\User;
 
-class AdminController extends Controller
+use Illuminate\Support\Facades\Auth;
+
+class TasksController extends Controller
 {
-    public function index(Request $request) {
-        $users = User::all();
-        return view('admin.index')
-            ->with('users', $users)
-            ->with('staffTree', User::get()->toTree());
+   
+    public function create (Request $request) {
+
+       $responsibles = User::getResponsibles(Auth::user());
+        return view('tasks.new')
+            ->with('responsibles', $responsibles)
+            ->with('isNewMode', true)
+            ->with('isEditMode', false)
+            ->with('isShowMode', false);
+
     }
 
-    public function newUser(Request $request) {
-        $heads = User::getHeads(null);
-        return view('admin.newUser')
-            ->with('heads', $heads)
-            ->with('isEditMode', false);
-        
-    }
-
-    public function editUser(Request $request, $id) {
+    public function edit(Request $request, $id) {
         $user = User::findOrFail($id);
         $currentHeadId = $user->getCurrentHeadId();
         $heads = $user->getHeads($user);
@@ -39,7 +36,7 @@ class AdminController extends Controller
             ->with('currentHeadId', $currentHeadId);
     }
 
-    public function storeUser(Request $request) {
+    public function store(Request $request) {
         $user = new User();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -50,7 +47,7 @@ class AdminController extends Controller
         return Redirect::route('admin.user.index');
     }
 
-    public function updateUser(Request $request, $id) {
+    public function update(Request $request, $id) {
         $user = User::findOrFail($id);
 
         $user->name = $request->input('name');
@@ -62,12 +59,5 @@ class AdminController extends Controller
 
         return Redirect::route('admin.user.index');
     }
-
-
-
-    public function test(Request $request) {
-        
-    }
-
 
 }

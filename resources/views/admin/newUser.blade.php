@@ -31,7 +31,6 @@
 
             <!-- /.row -->
 
-            {{-- Форма создания/редактирования основной информации фильма --}}
             <div class="row" style="margin-top: 20px">
                 <div class="col-lg-6">
                     <div class="form-group">
@@ -43,6 +42,12 @@
 
                         <div class="form-group">
                             {!! Form::bsText('Имя пользователя:', 'name', old('name')) !!}
+                        </div>
+
+
+                        <div class="form-group">
+                            {!! Form::label('head', 'Руководитель:',['class'=>'control-label']) !!}
+                            {!! Form::select('head', $heads, isset($user) ? $user->getCurrentHeadId() : '', array('class' => 'form-control', '')) !!}
                         </div>
 
                         <div class="form-group">
@@ -58,8 +63,11 @@
                         </div>
 
                         {!! Form::submit('Сохранить', ['class' => 'btn btn-primary']) !!}
+                        <a href="{{ route('admin.user.index') }}" class="btn btn-default form-inline">Назад</a>
 
                         {!! Form::close() !!}
+
+
                     </div>
 
                 </div>

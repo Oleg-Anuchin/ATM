@@ -26,13 +26,13 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <li class="active">
-                <a href="{{ route('admin.user.index') }}"><i class="fa fa-fw fa-dashboard"></i> Мои задачи</a>
+                <a href="{{ route('tasks.my.index') }}"><i class="fa fa-fw fa-dashboard"></i> Мои задачи</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Задачи для меня</a>
+                <a href="{{ route('tasks.formyself.index') }}"><i class="fa fa-fw fa-bar-chart-o"></i> Задачи для меня</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-fw fa-table"></i> Администрирование</a>
+                <a href="{{ route('admin.user.index') }}"><i class="fa fa-fw fa-table"></i> Администрирование</a>
             </li>
         </ul>
     </div>

@@ -48,7 +48,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Администрирование
+                        Мои задачи
                     </h1>
                 </div>
             </div>
@@ -57,15 +57,34 @@
             <div class="row">
                 <div class="col-lg-12">
                     <p>
-                        <a href="{{ route('admin.user.new') }}" class="btn btn-primary">
-                            Создать пользователя
+                        <a href="{{ route('tasks.new') }}" class="btn btn-primary">
+                            Создать задачу
                         </a>
                     </p>
 
-                    <h3>Список пользователей</h3>
-                    <ul class="list_line">
-                        @each('admin.staff', $staffTree, 'staffSubtree')
-                    </ul>
+                    <h3>Мои задачи</h3>
+                    <table class="table table-striped table-hover sortable">
+                        <thead>
+                        <tr>
+                            <th>Наименование</th>
+                            <th>Автор</th>
+                            <th>Ответственный</th>
+                            <th>Контрольый срок</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach ($tasks as $task)
+                            <tr class="clickable-row" data-href="{{ route('tasks.edit', $task->id) }}">
+                                <td>{{ $task->title }}</td>
+                                <td>{{ $task->author }}</td>
+                                <td>{{ $task->responsible }}</td>
+                                <td>{{ $task->getDeadline }}</td>
+
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+
 
                 </div>
             </div>
