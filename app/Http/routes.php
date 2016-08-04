@@ -11,15 +11,20 @@
 |
 */
 
+// По умолчанию перенаправляем в "Мои задачи".
 Route::get('/', function () {
-    return view('welcome');
+    return Redirect::route('tasks.my.index');
 });
 
-Route::auth();
+// Аутентификация / выход.
+$this->get('login', 'Auth\AuthController@showLoginForm')->name('auth.login');
+$this->post('login', 'Auth\AuthController@login');
+Route::get('/logout', ['as' => 'logout', function(){
+    \Auth::logout();
+    return Redirect::route('auth.login');
+}]);
 
-Route::get('/home', 'HomeController@index')->name('home');
-
-
+// Административная и пользовательская часть
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/admin', 'AdminController@index')->name('admin.user.index');
     Route::get('/admin/users/new', 'AdminController@newUser')->name('admin.user.new');
@@ -45,8 +50,4 @@ Route::group(['middleware' => 'auth'], function() {
 
 });
 
-Route::get('/logout', ['as' => 'logout', function(){
-    \Auth::logout();
-    return Redirect::route('home');
-}]);
 
