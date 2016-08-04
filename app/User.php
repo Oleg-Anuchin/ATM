@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Kalnoy\Nestedset\NodeTrait;
 
 use Hash;
+use Illuminate\Support\Facades\Auth;
 
 
 class User extends Authenticatable
@@ -87,8 +88,12 @@ class User extends Authenticatable
      */
     public static function getResponsibles($user)
     {
-        $heads = $user->children()->get()->lists('name', 'id');
-        return $heads;
+        $responsibles = $user->children()->get()->prepend(Auth::user())->lists('name', 'id');
+        return $responsibles;
 
+    }
+
+    public function getName() {
+        return $this->name;
     }
 }

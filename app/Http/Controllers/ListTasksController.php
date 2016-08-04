@@ -13,15 +13,15 @@ class ListTasksController extends Controller
     public function myIndex(Request $request) {
         $user = Auth::user();
         $tasks = Task::getMyTasks($user);
-        return view('tasks.my')
+        return view('tasks.myself')
             ->with('tasks', $tasks);
     }
 
     public function forMyselfIndex(Request $request) {
         $user = Auth::user();
         $tasks = Task::getForMyselfTasks($user);
-        return view('tasks.formyself')
-            ->with('tasks', tasks);
+        return view('tasks.myteam')
+            ->with('tasks', $tasks);
     }
 
 }

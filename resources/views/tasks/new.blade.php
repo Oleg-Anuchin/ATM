@@ -31,7 +31,7 @@
                     @elseif ($isNewMode)
                         <h1 class="page-header">Создание новой задачи</h1>
                     @elseif ($isShowMode)
-                        <h1 class="page-header">Просмотр задачи</h1>
+                        <h1 class="page-header">Просмотр задачи: {{ $task->title }}</h1>
                     @else
                     @endif
 
@@ -52,6 +52,14 @@
                             {!! Form::open(['route' => 'tasks.store', 'autocomplete' => 'off', 'files' => 'true']) !!}
                         @endif
 
+                        <div class="form-group">
+                            @if($isEditMode || $isNewMode)
+                                {!! Form::label('author', 'Автор: ' .Auth::user()->name, ['class'=>'control-label']) !!}
+                            @elseif($isShowMode)
+                                {!! Form::label('author', 'Автор: ' .$task->getAuthor(),['class'=>'control-label']) !!}
+                            @endif
+                        </div>
+
 
                         <div class="form-group">
                             @if($isEditMode || $isNewMode)
@@ -61,13 +69,6 @@
                             @endif
                         </div>
 
-                        <div class="form-group">
-                            @if($isEditMode || $isNewMode)
-                                {!! Form::label('author', 'Автор: ' .Auth::user()->name, ['class'=>'control-label']) !!}
-                            @elseif($isShowMode)
-                                {!! Form::label('author', 'Автор: ' .$task->author,['class'=>'control-label']) !!}
-                            @endif
-                        </div>
 
                         <div class="form-group">
 
@@ -86,42 +87,48 @@
 
                         <div class="form-group">
                             @if($isEditMode || $isNewMode)
-                                {!! Form::label('deadline', 'Крайний срок:',['class'=>'control-label']) !!}
-                                {!! Form::text('deadline', old('regDate'), array('id' => 'deadline')) !!}
+                                {{--{!! Form::label('deadline', 'Крайний срок:',['class'=>'control-label']) !!}--}}
+                                {{--{!! Form::text('deadline', old('regDate'), array('id' => 'deadline')) !!}--}}
                             @elseif($isShowMode)
-                                {!! Form::label('deadline', 'Крайний срок: ' .$task->getDeadline(), ['class'=>'control-label']) !!}
+                                {{--{!! Form::label('deadline', 'Крайний срок: ' .$task->getDeadline(), ['class'=>'control-label']) !!}--}}
                             @endif
                         </div>
 
                         <div class="form-group">
                             @if($isNewMode)
-                                {!! Form::file('file'); !!}
+                                {{--{!! Form::file('file'); !!}--}}
                             @elseif($isEditMode)
-                                {!! Form::file('file'); !!}
-                                <a href="#">Документ.doc</a>
+                                {{--{!! Form::file('file'); !!}--}}
+                                {{--<a href="#">Документ.doc</a>--}}
                             @elseif($isShowMode)
-                                <a href="#">Документ.doc</a>
+                                {{--<a href="#">Документ.doc</a>--}}
                             @endif
                         </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h6>datetimepicker1</h6>
+                        {{--<div class="row">--}}
+                        {{--<div class="col-md-12">--}}
+                        {{--<h6>datetimepicker1</h6>--}}
 
-                                    <div class="form-group">
-                                        <div class="input-group date" id="datetimepicker1">
-                                            <input type="text" class="form-control" />	<span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
-                                        </div>
-                                    </div>
-                                    <h6>datetimepicker2</h6>
+                        {{--<div class="form-group">--}}
+                        {{--<div class="input-group date" id="datetimepicker1">--}}
+                        {{--<input type="text" class="form-control" />	<span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>--}}
+                        {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<h6>datetimepicker2</h6>--}}
 
-                                    <input type="text" class="form-control" id="datetimepicker2" />
-                                </div>
-                            </div>
+                        {{--<input type="text" class="form-control" id="datetimepicker2" />--}}
+                        {{--</div>--}}
+                        {{--</div>--}}
 
 
-                        {!! Form::submit('Сохранить', ['class' => 'btn btn-primary']) !!}
-                        <a href="{{ route('admin.user.index') }}" class="btn btn-default form-inline">Назад</a>
+                        @if($isNewMode || $isEditMode)
+                            {!! Form::submit('Сохранить', ['class' => 'btn btn-primary']) !!}
+                        @elseif($isShowMode)
+                            <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary form-inline">Редактировать</a>
+                        @endif
+
+
+                        <a href="{{ route('tasks.my.index') }}" class="btn btn-default form-inline">Назад</a>
 
                         {!! Form::close() !!}
 

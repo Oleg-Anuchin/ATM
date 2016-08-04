@@ -48,7 +48,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Мои задачи
+                        Задачи для подчинённых
                     </h1>
                 </div>
             </div>
@@ -62,7 +62,6 @@
                         </a>
                     </p>
 
-                    <h3>Мои задачи</h3>
                     <table class="table table-striped table-hover sortable">
                         <thead>
                         <tr>
@@ -74,11 +73,11 @@
                         </thead>
                         <tbody>
                         @foreach ($tasks as $task)
-                            <tr class="clickable-row" data-href="{{ route('tasks.edit', $task->id) }}">
+                            <tr class="clickable-row" data-href="{{ route('tasks.show', $task->id) }}">
                                 <td>{{ $task->title }}</td>
                                 <td>{{ $task->author }}</td>
                                 <td>{{ $task->responsible }}</td>
-                                <td>{{ $task->getDeadline }}</td>
+                                <td>{{ $task->deadline }}</td>
 
                             </tr>
                         @endforeach

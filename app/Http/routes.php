@@ -42,10 +42,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/tasks/new', 'TasksController@store')->name('tasks.store');
     Route::get('/tasks/edit/{id}', 'TasksController@edit')->name('tasks.edit');
     Route::patch('/tasks/edit/{id}', 'TasksController@update')->name('tasks.update');
+    Route::get('/tasks/show/{id}', 'TasksController@show')->name('tasks.show');
     // Список задач: Мои задачи
     Route::get('/tasks/my', 'ListTasksController@myIndex')->name('tasks.my.index');
     // Список задач: Задачи для меня
-    Route::get('/tasks/formyself', 'ListTasksController@forMyselfIndex')->name('tasks.formyself.index');
+    Route::get('/tasks/my-team', 'ListTasksController@forMyselfIndex')->name('tasks.formyself.index');
 
 
 });

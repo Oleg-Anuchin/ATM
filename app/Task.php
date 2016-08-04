@@ -10,21 +10,57 @@ class Task extends Model
     public static function getMyTasks(User $user)
     {
         return DB::table('tasks')
-            //->join('users', 'tasks.responsible_id', '=', 'users.id')
-            //->join('users', 'tasks.responsible_id', '=', 'users.id')
-
-            ->join('users', function($join) {
-                $join
-                    ->on('tasks.responsible_id', '=', 'users.id')
-                    ->orOn('tasks.responsible_id', '=', 'users.id');
-            })
-
-            //->join('users', 'tasks.author_id', '=', 'users.id')
-            ->select('tasks.*', 'users.name')
+            ->join('users as responsible', 'tasks.responsible_id', '=', 'responsible.id')
+            ->join('users as author', 'tasks.author_id', '=', 'author.id')
+            ->select('tasks.*', 'responsible.name as responsible', 'author.name as author')
             ->where('tasks.responsible_id', '=', $user->id)
             ->get();
-        
-        
+    }
+
+    public static function getForMyselfTasks(User $user)
+    {
+        return DB::table('tasks')
+            ->join('users as responsible', 'tasks.responsible_id', '=', 'responsible.id')
+            ->join('users as author', 'tasks.author_id', '=', 'author.id')
+            ->select('tasks.*', 'responsible.name as responsible', 'author.name as author')
+            ->where('tasks.responsible_id', '!=', $user->id)
+            ->where('tasks.author_id', '=', $user->id)
+            ->get();
+    }
+
+
+    public function author() {
+        return $this->hasOne('App\User', 'id', 'author_id');
+    }
+
+    public function responsible() {
+        return $this->hasOne('App\User', 'id', 'responsible_id');
+    }
+
+    public function getAuthor() {
+        return $this->author()->first()->getName();
+    }
+
+    public function getResponsibleName() {
+        return $this->responsible()->first()->getName();
+    }
+
+    public function setAuthorById($id) {
+        return $this->author_id = $id;
+    }
+
+    public function setResponsibleById($id)
+    {
+        $this->responsible_id = $id;
+    }
+
+    public function getResponsibleId()
+    {
+        return $this->responsible_id;
+    }
+
+    public function getDeadline() {
+        return 'не указано';
     }
 
 }
