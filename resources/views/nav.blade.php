@@ -31,9 +31,12 @@
             <li>
                 <a href="{{ route('tasks.formyself.index') }}"><i class="fa fa-fw fa-bar-chart-o"></i> Задачи для подчинённых</a>
             </li>
+            @can('useAdmin', \Auth::user())
             <li>
                 <a href="{{ route('admin.user.index') }}"><i class="fa fa-fw fa-table"></i> Администрирование</a>
             </li>
+            @endcan
+
         </ul>
     </div>
     <!-- /.navbar-collapse -->

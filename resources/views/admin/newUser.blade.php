@@ -62,6 +62,11 @@
                             {!! Form::bsPassword('Пароль:', 'password', null) !!}
                         </div>
 
+                        <div class="form-group">
+                            {!! Form::label('role', 'Роль:',['class'=>'control-label']) !!}
+                            {!! Form::select('role', $roles, isset($user) ? $user->getCurrentRoleId() : '', array('class' => 'form-control', '')) !!}
+                        </div>
+
                         {!! Form::submit('Сохранить', ['class' => 'btn btn-primary']) !!}
                         <a href="{{ route('admin.user.index') }}" class="btn btn-default form-inline">Назад</a>
 

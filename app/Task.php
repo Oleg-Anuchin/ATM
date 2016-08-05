@@ -41,6 +41,10 @@ class Task extends Model
         return $this->author()->first()->getName();
     }
 
+    public function getAuthorId() {
+        return $this->author_id;
+    }
+
     public function getResponsibleName() {
         return $this->responsible()->first()->getName();
     }

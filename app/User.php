@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
+
+    const ROLE_ADMIN = 'ADMIN';
+    const ROLE_USER = 'USER';
+
+    
     use NodeTrait;
     /**
      * The attributes that are mass assignable.
@@ -36,6 +41,12 @@ class User extends Authenticatable
      */
     public function setHead($headId)
     {
+        // Не будет обновлять положение в дереве, если пользователь не менял его.
+        $currentId = $this->getCurrentHeadId();
+        if ($currentId == $headId) {
+            return;
+        }
+
         $newHeadUser = User::find($headId);
 
         if ($newHeadUser == null) {
@@ -67,6 +78,14 @@ class User extends Authenticatable
         $heads[''] = '--- Руководитель не указан ---';
         return $heads;
     }
+    
+    public static function getRoles() {
+        return [self::ROLE_USER => 'Пользователь', self::ROLE_ADMIN => 'Администратор'];
+    }
+
+    public function setRole($role) {
+        $this->role = $role;
+    }
 
 
     /**
@@ -83,6 +102,10 @@ class User extends Authenticatable
         }
     }
 
+    public function getCurrentRoleId() {
+        return $this->role;
+    }
+
     /*
      * Получить список исполнителей для автора задачи.
      */
@@ -93,7 +116,23 @@ class User extends Authenticatable
 
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
+
+    /**
+     * Имеет ли пользователь роль "Администратор".
+     */
+    public function isAdmin()
+    {
+        return $this->role == self::ROLE_ADMIN;
+    }
+    
+    /**
+     * Является ли пользователь автором задачи.
+     */
+    public function isAuthorTask($task) {
+        return $this->id == $task->getAuthorId();
+    } 
 }

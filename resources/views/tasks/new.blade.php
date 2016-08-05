@@ -124,7 +124,10 @@
                         @if($isNewMode || $isEditMode)
                             {!! Form::submit('Сохранить', ['class' => 'btn btn-primary']) !!}
                         @elseif($isShowMode)
-                            <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary form-inline">Редактировать</a>
+                            @if(policy(Auth::user())->editTask(Auth::user(), $task))
+                                <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary form-inline">Редактировать</a>
+                            @endif
+
                         @endif
 
 

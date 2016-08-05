@@ -16,9 +16,10 @@ use Illuminate\Support\Facades\Redirect;
 
 class TasksController extends Controller
 {
-   
-    public function create (Request $request) {
-       $responsibles = User::getResponsibles(Auth::user());
+
+    public function create(Request $request)
+    {
+        $responsibles = User::getResponsibles(Auth::user());
         return view('tasks.new')
             ->with('responsibles', $responsibles)
             ->with('isNewMode', true)
@@ -26,7 +27,8 @@ class TasksController extends Controller
             ->with('isShowMode', false);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $task = new Task();
         $task->title = $request->input('title');
         $task->setAuthorById(Auth::user()->id);
@@ -36,8 +38,13 @@ class TasksController extends Controller
         return Redirect::route('tasks.my.index');
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, $id)
+    {
         $task = Task::findOrFail($id);
+        if (!policy(Auth::user())->editTask(Auth::user(), $task)) {
+            abort(403);
+        }
+
         $responsibles = User::getResponsibles(Auth::user());
         return view('tasks.new')
             ->with('responsibles', $responsibles)
@@ -46,9 +53,13 @@ class TasksController extends Controller
             ->with('isShowMode', false)
             ->with('task', $task);
     }
-    
-    public function update(Request $request, $id) {
+
+    public function update(Request $request, $id)
+    {
         $task = Task::findOrFail($id);
+        if (!policy(Auth::user())->editTask(Auth::user(), $task)) {
+            abort(403);
+        }
 
         $task->title = $request->input('title');
         $task->setResponsibleById($request->input('responsible'));
@@ -57,7 +68,8 @@ class TasksController extends Controller
         return Redirect::route('tasks.my.index');
     }
 
-    public function show(Request $request, $id) {
+    public function show(Request $request, $id)
+    {
         $task = Task::findOrFail($id);
 
         return view('tasks.new')
