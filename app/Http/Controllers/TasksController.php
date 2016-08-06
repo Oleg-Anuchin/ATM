@@ -35,6 +35,13 @@ class TasksController extends Controller
         $task->setResponsibleById($request->input('responsible'));
         $task->save();
 
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $task->setFile($file);
+            $task->save();
+        }
+
+
         return Redirect::route('tasks.my.index');
     }
 
@@ -63,6 +70,10 @@ class TasksController extends Controller
 
         $task->title = $request->input('title');
         $task->setResponsibleById($request->input('responsible'));
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $task->setFile($file);
+        }
         $task->save();
 
         return Redirect::route('tasks.my.index');
@@ -77,6 +88,26 @@ class TasksController extends Controller
             ->with('isEditMode', false)
             ->with('isShowMode', true)
             ->with('task', $task);
+    }
+
+    /**
+     *
+     * @param Request $request
+     * @param $id
+     */
+    public function download(Request $request, $id) {
+        $task = Task::findOrFail($id);
+        
+        if($task->hasFile()) {
+            $path = $task->getFilePath();
+            $name = $task->getFileName();
+            
+        } else {
+            abort(404);
+        }
+        
+        
+        return response()->download($path, $name);
     }
 
 }

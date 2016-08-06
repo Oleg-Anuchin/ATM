@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Task extends Model
 {
@@ -65,6 +66,29 @@ class Task extends Model
 
     public function getDeadline() {
         return 'не указано';
+    }
+    
+    public function hasFile() {
+        return $this->file_id != null;
+    }
+    
+    public function file() {
+        return $this->hasOne('App\File', 'id', 'file_id');
+    }
+    
+    public function getFilePath() {
+        return $this->file()->first()->getPath($this->id);
+    }
+    
+    public function getFileName() {
+        return $this->file()->first()->getFileName();
+    }
+
+    public function setFile(UploadedFile $uploaded_file) {
+        $file = new File();
+        $file->setFile($uploaded_file, $this->id);
+        $file->save();
+        $this->file_id = $file->id;
     }
 
 }

@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/tasks/edit/{id}', 'TasksController@edit')->name('tasks.edit');
     Route::patch('/tasks/edit/{id}', 'TasksController@update')->name('tasks.update');
     Route::get('/tasks/show/{id}', 'TasksController@show')->name('tasks.show');
+    Route::get('/tasks/{id}/file/download', 'TasksController@download')->name('tasks.file.download');
+    
     // Список задач: Мои задачи
     Route::get('/tasks/my', 'ListTasksController@myIndex')->name('tasks.my.index');
     // Список задач: Задачи для меня

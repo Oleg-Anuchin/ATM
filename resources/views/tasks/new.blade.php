@@ -96,12 +96,25 @@
 
                         <div class="form-group">
                             @if($isNewMode)
-                                {{--{!! Form::file('file'); !!}--}}
+                                <p><b>Файл: </b></p>
+                                {!! Form::file('file') !!}
                             @elseif($isEditMode)
-                                {{--{!! Form::file('file'); !!}--}}
-                                {{--<a href="#">Документ.doc</a>--}}
+                                <p><b>Файл: </b></p>
+                                {!! Form::file('file') !!}
+                                <br/>
+                                @if($task->hasFile())
+                                    <p><b>Файлы:</b></p>
+                                    <a href="{{ route('tasks.file.download', $task->id) }}">
+                                        {{ $task->getFileName() }}
+                                    </a>
+                                @endif
                             @elseif($isShowMode)
-                                {{--<a href="#">Документ.doc</a>--}}
+                                @if($task->hasFile())
+                                    <p><b>Файлы:</b></p>
+                                    <a href="{{ route('tasks.file.download', $task->id) }}">
+                                        {{ $task->getFileName() }}
+                                    </a>
+                                @endif
                             @endif
                         </div>
 
