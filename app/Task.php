@@ -2,14 +2,23 @@
 
 namespace App;
 
+use App\Jobs\SendNewTaskEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+
+
+
 
 class Task extends Model
 {
+    const APP_SENDER_MAIL = 'app@sandboxf86f778dfcbd4366bb5a2578f78f3ee2.mailgun.org';
+    const APP_MAIL_FROM = 'ATM';
+    const SUBJECT_NEW_TASK = 'Новая задача';
+
     const CLIENT_SIDE_DEADLINE_FORMAT = 'd.m.Y H:i';
     /**
      * The attributes that should be mutated to dates.
@@ -18,7 +27,34 @@ class Task extends Model
      */
     protected $dates = ['deadline'];
 
-    //protected $dateFormat = 'd.m.Y H:i';
+   public static function boot()
+   {
+       parent::boot();
+
+       Task::created(function(Task $task)
+       {
+           $responsibleModel = $task->getResponsibleModel();
+           $authorModel = $task->getAuthorModel();
+
+           if ($responsibleModel->id == $authorModel->id) {
+               return;
+           }
+
+           dispatch(new \App\Jobs\SendNewTaskEmail($task, $authorModel, $responsibleModel, SendNewTaskEmail::TYPE_NEW_TASK_MESSAGE));
+
+//           $author = $authorModel->getName();
+//           $responsible = $responsibleModel->getName();
+//           $text = $task->title;
+//
+//           Mail::send('email.new_task', ['responsible' => $responsible, 'author' => $author, 'text' => $text],
+//               function ($m) use ($responsibleModel) {
+//                   $m->from(Task::APP_SENDER_MAIL, Task::APP_MAIL_FROM);
+//                   $m->to($responsibleModel->email, $responsibleModel->getName())->subject(Task::SUBJECT_NEW_TASK);
+//           });
+       });
+
+
+   }
 
 
     public static function getMyTasks(User $user)
@@ -132,6 +168,18 @@ class Task extends Model
         } else {
             return $this->deadline->format(self::CLIENT_SIDE_DEADLINE_FORMAT);
         }
+    }
+
+    public function getAuthorModel() {
+        return $this->author()->first();
+    }
+
+    public function getResponsibleModel() {
+        return $this->responsible()->first();
+    }
+    
+    public function setNotifySend($set) {
+        $this->is_notify_send = $set;
     }
 
 }
