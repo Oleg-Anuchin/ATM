@@ -33,6 +33,7 @@ class TasksController extends Controller
         $task->title = $request->input('title');
         $task->setAuthorById(Auth::user()->id);
         $task->setResponsibleById($request->input('responsible'));
+        $task->setDeadline($request->input('deadline'));
         $task->save();
 
         if ($request->hasFile('file')) {
@@ -74,6 +75,7 @@ class TasksController extends Controller
             $file = $request->file('file');
             $task->setFile($file);
         }
+        $task->setDeadline($request->input('deadline'));
         $task->save();
 
         return Redirect::route('tasks.my.index');

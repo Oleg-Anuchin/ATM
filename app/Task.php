@@ -6,8 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+use Carbon\Carbon;
+
 class Task extends Model
 {
+    const CLIENT_SIDE_DEADLINE_FORMAT = 'd.m.Y H:i';
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deadline'];
+
+    //protected $dateFormat = 'd.m.Y H:i';
+
+
     public static function getMyTasks(User $user)
     {
         return DB::table('tasks')
@@ -30,27 +43,33 @@ class Task extends Model
     }
 
 
-    public function author() {
+    public function author()
+    {
         return $this->hasOne('App\User', 'id', 'author_id');
     }
 
-    public function responsible() {
+    public function responsible()
+    {
         return $this->hasOne('App\User', 'id', 'responsible_id');
     }
 
-    public function getAuthor() {
+    public function getAuthor()
+    {
         return $this->author()->first()->getName();
     }
 
-    public function getAuthorId() {
+    public function getAuthorId()
+    {
         return $this->author_id;
     }
 
-    public function getResponsibleName() {
+    public function getResponsibleName()
+    {
         return $this->responsible()->first()->getName();
     }
 
-    public function setAuthorById($id) {
+    public function setAuthorById($id)
+    {
         return $this->author_id = $id;
     }
 
@@ -64,31 +83,55 @@ class Task extends Model
         return $this->responsible_id;
     }
 
-    public function getDeadline() {
+    public function getDeadline()
+    {
         return 'не указано';
     }
-    
-    public function hasFile() {
+
+    public function hasFile()
+    {
         return $this->file_id != null;
     }
-    
-    public function file() {
+
+    public function file()
+    {
         return $this->hasOne('App\File', 'id', 'file_id');
     }
-    
-    public function getFilePath() {
+
+    public function getFilePath()
+    {
         return $this->file()->first()->getPath($this->id);
     }
-    
-    public function getFileName() {
+
+    public function getFileName()
+    {
         return $this->file()->first()->getFileName();
     }
 
-    public function setFile(UploadedFile $uploaded_file) {
+    public function setFile(UploadedFile $uploaded_file)
+    {
         $file = new File();
         $file->setFile($uploaded_file, $this->id);
         $file->save();
         $this->file_id = $file->id;
+    }
+
+    public function setDeadline($deadline)
+    {
+        if ($deadline == '') {
+            $this->deadline = null;
+        } else {
+            $this->deadline = Carbon::createFromFormat(self::CLIENT_SIDE_DEADLINE_FORMAT, $deadline);
+        }
+    }
+
+    public function getDeadlineString()
+    {
+        if ($this->deadline == null) {
+            return 'не указан';
+        } else {
+            return $this->deadline->format(self::CLIENT_SIDE_DEADLINE_FORMAT);
+        }
     }
 
 }
