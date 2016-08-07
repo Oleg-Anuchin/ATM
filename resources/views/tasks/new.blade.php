@@ -77,14 +77,17 @@
 
                         <div class="form-group">
                             @if($isEditMode || $isNewMode)
-                                {!! Form::bsText('Наименование:', 'title', old('title')) !!}
+                                {{ Form::label('title', 'Наименование', ['class' => 'form-label']) }}
+                                {{ Form::text('title', old('title'), ['class' => 'form-control', 'required']) }}
                             @elseif($isShowMode)
                                 {!! Form::label('title', 'Наименование: ' .$task->title,['class'=>'control-label']) !!}
                             @endif
                         </div>
 
 
-                        <div class="form-group">
+
+
+                            <div class="form-group">
 
                         </div>
 

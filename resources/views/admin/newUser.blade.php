@@ -15,6 +15,10 @@
 
         <div class="container-fluid">
 
+            @if($errors->any())
+                <h4>Ошибка: {{ $errors->first() }}</h4>
+                @endif
+
             <!-- Page Heading -->
             <div class="row">
                 <div class="col-lg-12">
@@ -41,7 +45,8 @@
                         @endif
 
                         <div class="form-group">
-                            {!! Form::bsText('Имя пользователя:', 'name', old('name')) !!}
+                            {{ Form::label('name', 'Имя пользователя:', ['class' => 'form-label']) }}
+                            {{ Form::text('name', old('name'), ['class' => 'form-control', 'required']) }}
                         </div>
 
 
@@ -51,7 +56,14 @@
                         </div>
 
                         <div class="form-group">
-                            {!! Form::bsText('Электронная почта:', 'email', old('email')) !!}
+                            {{ Form::label('email', 'Электронная почта:', ['class' => 'form-label']) }}
+                            <input type='email' name="email" required class="form-control" value="{{ isset($user) ? $user->email : '' }}"/>
+                            @if ($errors->has('duplicate'))
+                                qwdwqd
+                                <span class="help-block">
+                                        <strong>{{ $errors->first('duplicate') }}</strong>
+                                    </span>
+                            @endif
                         </div>
 
                         <!-- The text and password here are to prevent FF from auto filling my login credentials because it ignores autocomplete="off"-->
@@ -59,7 +71,13 @@
                         <input type="password" style="display:none">
 
                         <div class="form-group">
-                            {!! Form::bsPassword('Пароль:', 'password', null) !!}
+                            @if($isEditMode)
+                                {!! Form::bsPassword('Пароль:', 'password', null) !!}
+                            @else
+                                {{ Form::label('password', 'Пароль:', ['class' => 'form-label']) }}
+                                {{ Form::password('password', ['class' => 'form-control', 'required']) }}
+                            @endif
+
                         </div>
 
                         <div class="form-group">

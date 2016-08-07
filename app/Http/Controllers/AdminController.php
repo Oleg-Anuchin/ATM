@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -58,7 +59,16 @@ class AdminController extends Controller
         $user->setPassword($request->password);
         $user->setHead($request->input('head'));
         $user->setRole($request->input('role'));
-        $user->save();
+        try {
+            $user->save();
+        }
+        catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return back()->withInput()->withErrors(['Такой email уже зарегистрирован.']);
+            }
+            abort(500);
+        }
+
 
 
         return Redirect::route('admin.user.index');
@@ -70,13 +80,22 @@ class AdminController extends Controller
         $user = User::findOrFail($id);
 
         $user->name = $request->input('name');
+        $user->email = $request->input('email');
         if ($request->input('password'))
             $user->setPassword($request->password);
         $user->setHead($request->input('head'));
         $user->setRole($request->input('role'));
-        $user->save();
-        $user->hasMoved();
+        try {
+            $user->save();
+        }
+        catch (QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return back()->withErrors(['Такой email уже зарегистрирован.']);
+            }
+            abort(500);
+        }
 
+        $user->hasMoved();
         return Redirect::route('admin.user.index');
     }
 
